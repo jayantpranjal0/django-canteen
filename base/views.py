@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from .models import *
+from .models import Canteen,Meal,User,Organization
 
 
 
@@ -9,9 +9,9 @@ from .models import *
 def home(request):
     favorite_canteens=[]
     favorite_meals=[]
-    canteens=Canteens.objects.all()
-    print(canteens)
-    return render(request, 'base/home.html',params={'canteens':canteens,'favorite_canteens':favorite_canteens,'favorite_meals':favorite_meals})
+    canteens=Canteen.objects.all()
+    print(canteens.count())
+    return render(request, 'base/home.html',{'canteens':canteens,'favorite_canteens':favorite_canteens,'favorite_meals':favorite_meals})
 
 
 
