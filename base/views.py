@@ -13,6 +13,16 @@ def home(request):
     print(canteens.count())
     return render(request, 'base/home.html',{'canteens':canteens,'favorite_canteens':favorite_canteens,'favorite_meals':favorite_meals})
 
+@login_required()
+def canteen(request,id):
+    canteen=Canteen.objects.get(id=id)
+    meals=Meal.objects.filter(canteen=canteen)
+    return render(request, 'base/canteen.html',{'canteen':canteen,'meals':meals})
+
+@login_required()
+def meal(request,slug):
+    meal=Meal.objects.get(slug=slug)
+    return render(request, 'base/meal.html',{'meal':meal})
 
 
 # {% if user.is_authenticated %}

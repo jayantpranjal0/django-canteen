@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 
 
+# Maybe you need to change the meals models and canteen relation model
 
 # Make the UserModel username to use email only or to have username at all
 class User(AbstractUser):
@@ -54,7 +55,7 @@ class Canteen(models.Model):
     name=models.CharField(max_length=100)
     description=models.TextField(blank=True)
     organization=models.ForeignKey(Organization, on_delete=models.CASCADE)
-    meals=models.ManyToManyField('Meal', blank=True, related_name='canteens')
+    # meals=models.ManyToManyField('Meal', blank=True, related_name='canteens')
     # Make this thing a little easier to use (Meals not always same and even if same it can get messy sometimes)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
@@ -68,7 +69,7 @@ class Meal(models.Model):
     name=models.CharField(max_length=100)
     description=models.TextField(blank=True)
     price=models.IntegerField()
-    # canteen=models.ForeignKey(Canteen, on_delete=models.CASCADE)
+    canteen=models.ForeignKey(Canteen, on_delete=models.CASCADE)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
 
