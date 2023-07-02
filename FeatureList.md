@@ -12,6 +12,8 @@
 - Accept order
 - Enter OTP
 - Accept Partial Order
+- Implement Tests
+- Media Features
 
 # Styles
 
@@ -27,3 +29,5 @@
 4. Entering amount of items avaialable
 3. Accept order by entering Changing OTP in after every order
 4. Styles
+5. Implement Tests
+

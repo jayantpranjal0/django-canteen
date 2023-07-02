@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 from .models import Canteen,Meal,User,Organization
 
 
-
 @login_required()
 def home(request):
     favorite_canteens=[]
@@ -23,18 +22,3 @@ def canteen(request,id):
 def meal(request,slug):
     meal=Meal.objects.get(slug=slug)
     return render(request, 'base/meal.html',{'meal':meal})
-
-
-# {% if user.is_authenticated %}
-#                 {% comment %} {% if request.path == '/login/' or request.path == '/signup/' %}
-#                     {% url 'home' %}
-#                 {% endif %} {% endcomment %}
-#                 Authenticated
-#             {% else %}
-#                 {% comment %} {% if request.path != '/login/' and request.path != '/signup/' %}
-#                     {% url 'login' %}
-#                 {% endif %} {% endcomment %}
-#                 Not Authenticated
-#             {% endif %} 
-
-
