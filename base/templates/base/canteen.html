@@ -1,8 +1,15 @@
-<h1>{{canteen}}</h1>
+{% extends 'components/base.html' %} {%block content%}
+
+    <h1>{{canteen}}</h1>
 
 
-{%for meal in meals%}
-<p>
-{{meal.name}} - {{meal.price}}
-</p>
-{%endfor%}
+    {%for meal in meals%}
+        <p>
+            {{meal.name}} - {{meal.price}}
+        </p>
+        <input></input>
+        <button>+</button>
+    {%endfor%}
+{%endblock%}
+
+

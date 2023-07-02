@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'bootstrap5',
-    
+    # 'cart',
 ]
 
 
