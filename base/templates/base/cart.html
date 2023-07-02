@@ -1,0 +1,7 @@
+{% extends 'components/base.html' %} {%block content%}
+    {% for items in cart%}
+        {{items.name}}
+        {{items.price}}
+        {{items.quantity}}
+    {%endfor%}
+{%endblock%}

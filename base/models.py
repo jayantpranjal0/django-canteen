@@ -15,17 +15,38 @@ class User(AbstractUser):
     date_joined = models.DateTimeField(auto_now_add=True)
     default_organization=models.ForeignKey('Organization', on_delete=models.CASCADE, blank=True, null=True)
     favourite_canteen=models.ManyToManyField('Organization', blank=True, related_name='+')
-    cart=models.ForeignKey('Cart', on_delete=models.CASCADE, blank=True, null=True)
     favourite_meals=models.ManyToManyField('Meal', blank=True, related_name='+')
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
     def __str__(self):
         return self.email
+    def cartItems(self):
+        return CartItem.objects.filter(user=self)
+    def updateCart(self):
+        pass
+    # def getOrders(self):
+        # return
+    # def completedOrders(self):
+        # pass
+    # def favouriteCanteens(self):
+        # pass
+    # def favouriteMeals(self):
+        # pass
+    # def getOrganizations(self):
+        # pass
+    # def defaultOrganization(self):
+        # pass
+    
+class CartItem(models.Model):
+    meal=models.ForeignKey('Meal', on_delete=models.CASCADE)
+    quantity=models.PositiveIntegerField(default=1)
+    user=models.ForeignKey('User', on_delete=models.CASCADE)
+    class Meta:
+        unique_together = ( 'meal', 'user')
 
 class Organization(models.Model):
     name=models.CharField(max_length=100)
-    slug=models.SlugField(max_length=100, unique=True, blank=True)
     description=models.TextField(blank=True)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
@@ -36,8 +57,6 @@ class Organization(models.Model):
         super().save(*args, **kwargs)
     def __str__(self):
         return self.name
-    # def getAbsolueteUrl(self):
-    #     return reverse("organization_detail", kwargs={"slug": self.slug})
     def getCanteens(self):
         canteens=Canteen.objects.filter(organization=self)
         return canteens
@@ -51,9 +70,12 @@ class Canteen(models.Model):
 
     def __str__(self):
         return self.name
-    # def get_orders(self):
-    #     orders=Order.objects.filter(canteen=self)
-    #     return orders
+    def getOrders(self):
+        orders=Order.objects.filter(canteen=self)
+        return orders
+    def getOrderHistory(self):
+        orders=CompletedOrderHistory.objects.filter(canteen=self)
+        return orders
     def all():
         return Canteen.objects.all();
     def ID(id):
@@ -61,6 +83,9 @@ class Canteen(models.Model):
     def meals(id):
         meals=Meal.objects.filter(canteen=Canteen.ID(id))
         return meals
+    # def getCurrentOrders():
+    # def getPendingItems():
+        
 
 class Meal(models.Model):
     name=models.CharField(max_length=100)
@@ -74,35 +99,24 @@ class Meal(models.Model):
         return self.name
 
 
-class Cart(models.Model):
-    items = models.ManyToManyField(Meal, through='CartItem', related_name='cart')
-class CartItem(models.Model):
-    cart=ForeignKey(Cart, on_delete=models.CASCADE)
-    user=ForeignKey(User, on_delete=models.CASCADE)
-    item = models.ForeignKey('Meal', on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
+# class Order(models.Model):
+#     items=models.ManyToManyField(Meal,through='OrderItem',related_name='orders')
+# class OrderItem(models.Model):
+#     order=ForeignKey('Order',on_delete=models.CASCADE)
+#     user=ForeignKey(User,on_delete=models.CASCADE)
+#     item=models.ForeignKey('Meal',on_delete=models.CASCADE)
+#     quantity=models.PositiveIntegerField(default=1)
 
-    class Meta:
-        unique_together = ('cart', 'item')
-        
-class Order(models.Model):
-    items=models.ManyToManyField(Meal,through='OrderItem',related_name='orders')
-class OrderItem(models.Model):
-    order=ForeignKey('Order',on_delete=models.CASCADE)
-    user=ForeignKey(User,on_delete=models.CASCADE)
-    item=models.ForeignKey('Meal',on_delete=models.CASCADE)
-    quantity=models.PositiveIntegerField(default=1)
+#     class Meta:
+#         unique_together = ( 'order', 'item')
 
-    class Meta:
-        unique_together = ( 'order', 'item')
-
-class CompletedOrderHistory(models.Model):
-    items=models.ManyToManyField(Meal,through='CompletedOrderHistoryItem',related_name='complete_order_history')
-class CompletedOrderHistoryItem(models.Model):
-    order=ForeignKey(CompletedOrderHistory,on_delete=models.CASCADE)
-    user=ForeignKey(User,on_delete=models.CASCADE)
-    item=models.ForeignKey(Meal,on_delete=models.CASCADE)
-    quantity=models.PositiveIntegerField(default=1)
+# class CompletedOrderHistory(models.Model):
+#     items=models.ManyToManyField(Meal,through='CompletedOrderHistoryItem',related_name='complete_order_history')
+# class CompletedOrderHistoryItem(models.Model):
+#     order=ForeignKey(CompletedOrderHistory,on_delete=models.CASCADE)
+#     user=ForeignKey(User,on_delete=models.CASCADE)
+#     item=models.ForeignKey(Meal,on_delete=models.CASCADE)
+#     quantity=models.PositiveIntegerField(default=1)
     
-    class Meta:
-        unique_together = ( 'order','item' )
+#     class Meta:
+#         unique_together = ( 'order','item' )

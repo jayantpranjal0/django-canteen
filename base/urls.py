@@ -10,5 +10,5 @@ urlpatterns = [
     path('',views.home,name='home'),
     path('canteen/<int:id>/',views.canteen,name='canteen'),
     path('canteen',views.canteen,name='canteen'),
-    
+    path('cart',views.cart,name='cart'),
 ]

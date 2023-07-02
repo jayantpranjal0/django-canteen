@@ -13,6 +13,8 @@ def canteen(request,id):
     return render(request, 'base/canteen.html',{'canteen':Canteen.ID(id),'meals':Canteen.meals(id)})
 
 @login_required()
-def meal(request,slug):
-    meal=Meal.objects.get(slug=slug)
-    return render(request, 'base/meal.html',{'meal':meal})
+def cart(request):
+    return render(request, 'base/cart.html',{'cart':request.user.cart})
+
+
+
