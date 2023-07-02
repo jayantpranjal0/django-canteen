@@ -6,17 +6,11 @@ from .models import Canteen,Meal,User,Organization
 
 @login_required()
 def home(request):
-    favorite_canteens=[]
-    favorite_meals=[]
-    canteens=Canteen.objects.all()
-    print(canteens.count())
-    return render(request, 'base/home.html',{'canteens':canteens,'favorite_canteens':favorite_canteens,'favorite_meals':favorite_meals})
+    return render(request, 'base/home.html',{'canteens':Canteen.all(),})
 
 @login_required()
 def canteen(request,id):
-    canteen=Canteen.objects.get(id=id)
-    meals=Meal.objects.filter(canteen=canteen)
-    return render(request, 'base/canteen.html',{'canteen':canteen,'meals':meals})
+    return render(request, 'base/canteen.html',{'canteen':Canteen.ID(id),'meals':Canteen.meals(id)})
 
 @login_required()
 def meal(request,slug):
