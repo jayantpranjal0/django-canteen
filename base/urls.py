@@ -11,4 +11,5 @@ urlpatterns = [
     path('canteen/<int:id>/',views.canteen,name='canteen'),
     path('canteen',views.canteen,name='canteen'),
     path('cart',views.cart,name='cart'),
+    path('update_cart',views.update_cart,name='update_cart'),
 ]

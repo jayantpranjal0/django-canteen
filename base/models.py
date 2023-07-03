@@ -22,8 +22,11 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
     def cartItems(self):
-        return CartItem.objects.filter(user=self)
-    def updateCart(self):
+        total=0
+        for cart_item in CartItem.objects.filter(user=self):
+            total+=cart_item.meal.price*cart_item.quantity
+        return {'cart_items':CartItem.objects.filter(user=self),'cart_total':total}
+    def updateCart(self,updatedcart):
         pass
     # def getOrders(self):
         # return

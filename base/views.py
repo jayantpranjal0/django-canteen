@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from .models import Canteen,Meal,User,Organization
-
+import json
 
 @login_required()
 def home(request):
@@ -14,7 +14,18 @@ def canteen(request,id):
 
 @login_required()
 def cart(request):
-    return render(request, 'base/cart.html',{'cart':request.user.cart})
+    cart=User.objects.get(id=request.user.id).cartItems()
+    # print(cart['cart_items'])
+    return render(request, 'base/cart.html',cart)
+
+@login_required()
+def update_cart(request):
+    if request.method=='POST':
+        # redirect_url=request.POST['redirect_url']
+        pass
+
+    pass
+
 
 
 
