@@ -1,15 +1,94 @@
 {% extends 'components/base.html' %} {%block content%}
 
-    <h1>{{canteen}}</h1>
+<form method="POST" action="{% url 'checkout' %}" class="mb-4" id="order-form" onsubmit='return submitter();'>
+    {% csrf_token %}
+        <table class="table table-striped" id="meal-table">
+            {% for meal in meals %}
+            <tr class="{% cycle 'odd' 'even' %} mealItem" data-id="{{ meal.id }}">
+                <td>{{ meal.name }}</td>
+                <td>
+                    <div class="d-flex justify-content-end">
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-secondary remove-item me-2"
+                            data-id="{{ meal.id }}"
+                        >
+                            -
+                        </button>
+                        <input
+                            type="number"
+                            name="{{ meal.id }}"
+                            value="0"
+                            min="0"
+                            class="form-control me-2"
+                            style="width: 70px"
+                        />
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-primary add-item"
+                            data-id="{{ meal.id }}"
+                        >
+                            +
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    <button type="submit" class="btn btn-primary">Checkout</button>
+</form>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var removeButtons = document.querySelectorAll(".remove-item");
+        removeButtons.forEach(function (button) {
+            button.addEventListener("click", function (event) {
+                var mealId = event.target.getAttribute("data-id");
+                var quantityInput = document.querySelector(
+                    'input[name="' + mealId + '"]'
+                );
+                var currentQuantity = parseInt(quantityInput.value);
+                if (currentQuantity > 0) {
+                    quantityInput.value = currentQuantity - 1;
+                }
+            });
+        });
 
-    {%for meal in meals%}
-        <p>
-            {{meal.name}} - {{meal.price}}
-        </p>
-        <input></input>
-        <button>+</button>
-    {%endfor%}
+        var addButtons = document.querySelectorAll(".add-item");
+        addButtons.forEach(function (button) {
+            button.addEventListener("click", function (event) {
+                var mealId = event.target.getAttribute("data-id");
+                var quantityInput = document.querySelector(
+                    'input[name="' + mealId + '"]'
+                );
+                var currentQuantity = parseInt(quantityInput.value);
+                quantityInput.value = currentQuantity + 1;
+            });
+        });
+    });
+    orderForm=document.getElementById('order-form');
+    orderForm.addEventListener('submit', event => {
+        event.preventDefault();
+        var meals = document.querySelectorAll(".mealItem");
+        var order={
+        }
+        for (var i = 0; i < meals.length; i++) {
+            var mealId = meals[i].getAttribute("data-id");
+            var quantityInput = document.querySelector(
+                'input[name="' + mealId + '"]'
+            );
+            var currentQuantity = parseInt(quantityInput.value);
+            if(currentQuantity>0){
+                order[mealId]=currentQuantity;
+            }
+        }
+        mealTable=document.getElementById('meal-table');
+        mealTable.innerHTML='<input type="hidden" name="order" value=\''+JSON.stringify(order)+'\'>';
+        orderForm.submit();
+        
+
+    });
+    
+</script>
+
 {%endblock%}
-
-

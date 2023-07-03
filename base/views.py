@@ -1,30 +1,45 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from .models import Canteen,Meal,User,Organization
+from .models import *
 import json
 
 @login_required()
 def home(request):
-    return render(request, 'base/home.html',{'canteens':Canteen.all(),})
+    return HttpResponse('Under Construction')
 
 @login_required()
 def canteen(request,id):
-    return render(request, 'base/canteen.html',{'canteen':Canteen.ID(id),'meals':Canteen.meals(id)})
+    return render(request, 'base/canteen.html',{'canteen':Canteen.ID(id),'meals':Canteen.meals(id),"canteens":Canteen.all()})
 
 @login_required()
-def cart(request):
-    cart=User.objects.get(id=request.user.id).cartItems()
-    # print(cart['cart_items'])
-    return render(request, 'base/cart.html',cart)
-
-@login_required()
-def update_cart(request):
-    if request.method=='POST':
-        # redirect_url=request.POST['redirect_url']
-        pass
-
-    pass
+def checkout(request):
+    try:
+        if request.method=='POST':
+            print(request.POST['order'])
+            order=request.POST['order']
+            orderRequest=json.loads(order)
+            order=Order.objects.create(
+                user=request.user,
+            )
+            for meal,quantity in orderRequest.items():
+                print(meal,quantity)
+                if quantity>0:
+                    meal=Meal.objects.get(id=meal)
+                    if meal!=None:
+                        OrderItem.objects.create(
+                            order=order,
+                            meal=meal,
+                            quantity_ordered=quantity
+                        )
+                    else:
+                        return HttpResponse('Error')
+            return HttpResponse('Success')
+        else:
+            return HttpResponse('Error')
+    except Exception as e:
+        print(e)
+        return HttpResponse('Error')
 
 
 

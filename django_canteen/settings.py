@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'bootstrap5',
-    # 'cart',
+    'django_bootstrap_icons'
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -103,4 +103,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
 ]
