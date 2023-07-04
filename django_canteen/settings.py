@@ -20,6 +20,7 @@ ALLOWED_HOSTS = ['*']
 WSGI_APPLICATION = 'django_canteen.wsgi.application'
 SITE_ID = 1
 ROOT_URLCONF = 'django_canteen.urls'
+ASGI_APPLICATION = 'django_canteen.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -55,7 +56,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'bootstrap5',
-    'django_bootstrap_icons'
+    'django_bootstrap_icons',
+    'channels',
+
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
