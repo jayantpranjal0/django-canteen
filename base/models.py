@@ -12,9 +12,7 @@ class User(AbstractUser):
     email = models.EmailField(max_length=100, unique=True)
     full_name=models.CharField(max_length=100, blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
-    default_canteen=models.ForeignKey('Canteen', on_delete=models.CASCADE, blank=True, null=True)
-    favourite_canteen=models.ManyToManyField('Canteen', blank=True, related_name='+')
-    favourite_meals=models.ManyToManyField('Meal', blank=True, related_name='+')
+    isprovider=models.BooleanField(default=False)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
@@ -47,7 +45,24 @@ class Canteen(models.Model):
         return meals
     # def getCurrentOrders():
     # def getPendingItems():
-        
+class Profile(models.Model):
+    user=models.OneToOneField('User', on_delete=models.CASCADE)
+    bio=models.TextField(blank=True)
+    birth_date=models.DateField(null=True, blank=True)
+    default_canteen=models.ForeignKey('Canteen', on_delete=models.CASCADE, blank=True, null=True)
+    favourite_canteen=models.ManyToManyField('Canteen', blank=True, related_name='+')
+    favourite_meals=models.ManyToManyField('Meal', blank=True, related_name='+')
+
+    def __str__(self):
+        return self.user.username
+
+
+class Provider(models.Model):
+    user=models.OneToOneField('User', on_delete=models.CASCADE)
+    canteen=models.ForeignKey('Canteen', on_delete=models.CASCADE)
+    bio=models.TextField(blank=True)
+    birth_date=models.DateField(null=True, blank=True)
+    pass
 
 class Meal(models.Model):
     name=models.CharField(max_length=100)
@@ -106,5 +121,56 @@ class Order(models.Model):
     # def getItemOrdersCount(canteen):
     #     items=OrderItem.objects.filter(order__canteen=canteen)
     #     return items.count()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

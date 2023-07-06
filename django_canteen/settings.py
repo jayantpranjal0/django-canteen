@@ -9,6 +9,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 LOGIN_REDIRECT_URL = '/'
+PROVIDER_LOGIN_REDIRECT_URL = '/'
 AUTH_USER_MODEL = 'base.User'
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kolkata'
@@ -18,9 +19,9 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ALLOWED_HOSTS = ['*']
 WSGI_APPLICATION = 'django_canteen.wsgi.application'
+ASGI_APPLICATION = 'django_canteen.asgi.application'
 SITE_ID = 1
 ROOT_URLCONF = 'django_canteen.urls'
-ASGI_APPLICATION = 'django_canteen.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -40,8 +41,6 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
-
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -58,7 +57,7 @@ INSTALLED_APPS = [
     'bootstrap5',
     'django_bootstrap_icons',
     'channels',
-
+    'canteen_provider.apps.CanteenProviderConfig',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -110,3 +109,9 @@ AUTH_PASSWORD_VALIDATORS = [
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+CHANNEL_LAYERS = {
+	"default": {
+		"BACKEND": "channels.layers.InMemoryChannelLayer"
+	}
+}
+

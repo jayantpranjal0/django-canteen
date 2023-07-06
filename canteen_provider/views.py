@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponse
+from django.contrib import messages
 
 
-def chatPage(request, *args, **kwargs):
-	if not request.user.is_authenticated:
-		return redirect("login-user")
+@login_required()
+def providerPage(request, *args, **kwargs):
 	context = {}
-	return render(request, "chat/chatPage.html", context)
+	return render(request, "canteen_provider/providerPage.html", context)
