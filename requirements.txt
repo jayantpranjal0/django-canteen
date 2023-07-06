@@ -3,3 +3,4 @@ python-dotenv==1.0.0
 django-allauth==0.54.0
 pipreqs
 django-crispy-forms==2.0
+channels==4.0.0

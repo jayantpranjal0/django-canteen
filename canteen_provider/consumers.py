@@ -21,20 +21,6 @@ class CanteenProvider(AsyncWebsocketConsumer):
 			self.channel_name
 		)
 
-	# Receive message from WebSocket
-	# async def receive(self, text_data):
-	# 	text_data_json = json.loads(text_data)
-	# 	message = text_data_json['message']
-
-	# 	# Send message to room group
-	# 	await self.channel_layer.group_send(
-	# 		self.room_group_name,
-	# 		{
-	# 			'type': 'chat_message',
-	# 			'message': message
-	# 		}
-	# 	)
-
 	async def receive(self, text_data):
 		text_data_json = json.loads(text_data)
 		message = text_data_json["message"]
@@ -50,7 +36,21 @@ class CanteenProvider(AsyncWebsocketConsumer):
 		username = event["username"]
 		await self.send(text_data = json.dumps({"message":message ,"username":username}))
 
+	# Receive message from WebSocket
+	# async def receive(self, text_data):
+	# 	text_data_json = json.loads(text_data)
+	# 	message = text_data_json['message']
 
+	# 	# Send message to room group
+	# 	await self.channel_layer.group_send(
+	# 		self.room_group_name,
+	# 		{
+	# 			'type': 'chat_message',
+	# 			'message': message
+	# 		}
+	# 	)
+
+	# Receive message from room group
 	# Functions to perform:
 		# 1. Create Orders
 		# 2. Deliver OTP

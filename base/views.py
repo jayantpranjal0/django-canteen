@@ -3,16 +3,20 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from .models import *
 import json
+from base.custom_decorators import *
 
 @login_required()
+@customer_required()
 def home(request):
     return HttpResponse('Under Construction')
 
 @login_required()
+@customer_required()
 def canteen(request,id):
     return render(request, 'base/canteen.html',{'canteen':Canteen.ID(id),'meals':Canteen.meals(id),"canteens":Canteen.all()})
 
 @login_required()
+@customer_required()
 def checkout(request):
     try:
         if request.method=='POST':
@@ -40,7 +44,3 @@ def checkout(request):
     except Exception as e:
         print(e)
         return HttpResponse('Error')
-
-
-
-
