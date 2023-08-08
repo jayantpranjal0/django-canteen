@@ -1,25 +1,102 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from base.models import *
+from base.custom_decorators import *
+from django.contrib.auth.decorators import login_required
+from asgiref.sync import sync_to_async
+
 
 class CanteenProvider(AsyncWebsocketConsumer):
 	async def connect(self):
-		self.room_name = self.scope['url_route']['kwargs']['room_name']
-		self.room_group_name = 'canteen_%s' % self.room_name
-		# Join room group
+		user=self.scope['user']
+		user_obj = await sync_to_async(User.objects.get)(username=user.username)
+		if(not user.is_authenticated):
+			print("Error")
+		temp = await sync_to_async(Canteen.objects.get)(canteen_owner=user_obj)
+		print(temp)
+		try:
+			canteen = await sync_to_async(Canteen.objects.get)(canteen_owner=user_obj)
+		except Canteen.DoesNotExist:
+			print("Error: Canteen not found for the user")
+			return
 		await self.channel_layer.group_add(
-			self.room_group_name,
+			user_obj.username,
 			self.channel_name
-		)
-
+        )
 		await self.accept()
 	
 	async def disconnect(self, close_code):
-		# Leave room group
 		await self.channel_layer.group_discard(
-			self.room_group_name,
+			'all',
 			self.channel_name
 		)
+
+	async def receive(self, text_data):
+		pass
+	async def sendOrder(self,order) :
+		# print(json.dumps(order))
+		# await self.send(json.dumps({"message":"Test Message"}))
+		# print('Reached')
+		await self.send(json.dumps({"message":order}))
+	async def custom_message_handler(self, event):
+		# print("Message Received")
+		# await self.send(text_data=message)
+		print(event["order"])
+		await self.sendOrder(event["order"])
+		print("Ordered")
+
+	async def deliverOrder(self , order) :
+		pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	# def get_inc(user_id):
+    	# return [obj for obj in gc.get_objects() if isinstance(obj, cls)]
+
+	# Receive message from room group
+	# Functions to perform:
+		# 1. Create Orders
+		# 2. Deliver OTP
+		# 3. Provide information on availability of orders
+		# 4. 
+
+
+class CustomerConsumer(AsyncWebsocketConsumer):
+	async def connect(self):
+		await self.accept()
+	
+	async def disconnect(self, close_code):
+		pass
 
 	async def receive(self, text_data):
 		text_data_json = json.loads(text_data)
@@ -35,24 +112,3 @@ class CanteenProvider(AsyncWebsocketConsumer):
 		message = event["message"]
 		username = event["username"]
 		await self.send(text_data = json.dumps({"message":message ,"username":username}))
-
-	# Receive message from WebSocket
-	# async def receive(self, text_data):
-	# 	text_data_json = json.loads(text_data)
-	# 	message = text_data_json['message']
-
-	# 	# Send message to room group
-	# 	await self.channel_layer.group_send(
-	# 		self.room_group_name,
-	# 		{
-	# 			'type': 'chat_message',
-	# 			'message': message
-	# 		}
-	# 	)
-
-	# Receive message from room group
-	# Functions to perform:
-		# 1. Create Orders
-		# 2. Deliver OTP
-		# 3. Provide information on availability of orders
-		# 4. 

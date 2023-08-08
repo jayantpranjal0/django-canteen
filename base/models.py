@@ -5,6 +5,8 @@ from django.db.models.fields import CharField, DateTimeField, IntegerField, Text
 from django.db.models.fields.related import ForeignKey
 from django.urls import reverse
 from django.utils.text import slugify
+from django.db.models import F
+
 
 
 class User(AbstractUser):
@@ -12,7 +14,6 @@ class User(AbstractUser):
     email = models.EmailField(max_length=100, unique=True)
     full_name=models.CharField(max_length=100, blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
-    isprovider=models.BooleanField(default=False)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
@@ -20,6 +21,7 @@ class User(AbstractUser):
         return self.username
 
 class Canteen(models.Model):
+    canteen_owner=models.ForeignKey('User', on_delete=models.CASCADE)
     name=models.CharField(max_length=100)
     description=models.TextField(blank=True)
     created_at=models.DateTimeField(auto_now_add=True)
@@ -90,7 +92,6 @@ class OrderItem(models.Model):
 
 class Order(models.Model):
     time_added=models.DateTimeField(auto_now_add=True)
-    time_completed=models.DateTimeField(blank=True, null=True)
     user=models.ForeignKey('User', on_delete=models.CASCADE)
     items=models.ManyToManyField('Meal', through=OrderItem)
 
@@ -108,12 +109,16 @@ class Order(models.Model):
         for item in items:
             total+=item.meal.price*item.quantity
         return total
-    def activeOrders():
-        return Order.objects.filter(time_completed=None)
-    def completedOrders():
-        return Order.objects.filter(time_completed__isnull=False)
-    def getActiveOrders(canteen):
-        return Order.objects.filter(time_completed=None,canteen=canteen)
+    # def activeOrders():
+    #     return Order.objects.filter(time_completed=None)
+    # def completedOrders():
+    #     return Order.objects.filter(time_completed__isnull=False)
+    def getActiveOrdersItems(canteen):
+        # orders=Order.objects.filter(OrderItem__meal__canteen=canteen)
+        # items_with_quantity_discrepancy = OrderItem.objects.filter(quantity_ordered__gt=F('quantity_delivered'))
+        # orderiterms=OrderItem.objects.filter(meal__canteen=canteen)
+        orderitems = OrderItem.objects.filter(quantity_ordered__gt=F('quantity_delivered'),meal__canteen=canteen)
+        return orderitems
     def getCompletedOrders(canteen):
         return Order.objects.filter(time_completed__isnull=False,canteen=canteen)
     # Item wise order count bhi krna tha

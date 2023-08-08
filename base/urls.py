@@ -10,4 +10,5 @@ urlpatterns = [
     path('',views.home,name='home'),
     path('canteen/<int:id>/',views.canteen,name='canteen'),
     path('checkout',views.checkout,name='checkout'),
+    path('orders',views.orders,name='customer_orders'),
 ]
