@@ -1,0 +1,52 @@
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<div class="container mt-5">
+    <h1 class="mb-4">Items to be Delivered</h1>
+    <div class="row">
+        {% for meal, quantity_to_be_delivered in order_items.items %}
+            <div class="col-md-3">
+                <div class="card d-flex flex-column meal-card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ meal }}</h5>
+                        <p class="card-text">Quantity to be delivered: {{ quantity_to_be_delivered }}</p>
+                        <!-- Add buttons and prepared count here -->
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                            <button class="btn btn-success btn-sm">Prepare</button>
+                            <span class="badge badge-primary">0 Prepared</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<script>	
+    const chatSocket = new WebSocket("ws://" + window.location.host + "/");
+    chatSocket.onopen = function (e) {
+        console.log("The connection was setup successfully !");
+    };
+    chatSocket.onclose = function (e) {
+        console.log(e)
+        console.log("Something unexpected happened !");
+    };
+
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        console.log(data)
+    };
+
+    chatSocket.onerror = function (e) {
+        console.log(e)
+        console.log("Something unexpected happened !");
+    };
+
+    function avail_item(item_id, quantity) {
+        chatSocket.send(JSON.stringify({
+            "message": "Hello World"
+        }));
+    }
+    chatSocket.send(JSON.stringify({
+        "message": "Hello World"
+    }));
+</script>

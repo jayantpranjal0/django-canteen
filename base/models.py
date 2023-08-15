@@ -6,6 +6,8 @@ from django.db.models.fields.related import ForeignKey
 from django.urls import reverse
 from django.utils.text import slugify
 from django.db.models import F
+from collections import defaultdict
+
 
 
 
@@ -45,8 +47,7 @@ class Canteen(models.Model):
     def meals(self):
         meals=Meal.objects.filter(canteen=self)
         return meals
-    # def getCurrentOrders():
-    # def getPendingItems():
+
 class Profile(models.Model):
     user=models.OneToOneField('User', on_delete=models.CASCADE)
     bio=models.TextField(blank=True)
@@ -89,6 +90,9 @@ class OrderItem(models.Model):
     class Meta:
         verbose_name_plural='OrdersItems'
         unique_together=('meal','order')
+    @property
+    def items_to_be_delivered(self):
+        return self.quantity_ordered - (self.quantity_delivered or 0)
 
 class Order(models.Model):
     time_added=models.DateTimeField(auto_now_add=True)
@@ -109,73 +113,20 @@ class Order(models.Model):
         for item in items:
             total+=item.meal.price*item.quantity
         return total
-    # def activeOrders():
-    #     return Order.objects.filter(time_completed=None)
-    # def completedOrders():
-    #     return Order.objects.filter(time_completed__isnull=False)
+
     def getActiveOrdersItems(canteen):
-        # orders=Order.objects.filter(OrderItem__meal__canteen=canteen)
-        # items_with_quantity_discrepancy = OrderItem.objects.filter(quantity_ordered__gt=F('quantity_delivered'))
-        # orderiterms=OrderItem.objects.filter(meal__canteen=canteen)
         orderitems = OrderItem.objects.filter(quantity_ordered__gt=F('quantity_delivered'),meal__canteen=canteen)
         return orderitems
+
     def getCompletedOrders(canteen):
         return Order.objects.filter(time_completed__isnull=False,canteen=canteen)
-    # Item wise order count bhi krna tha
 
-    # def getItemOrdersCount(canteen):
-    #     items=OrderItem.objects.filter(order__canteen=canteen)
-    #     return items.count()
+    def get_items_to_be_delivered(self):
+        items_to_be_delivered = defaultdict(int)
+        order_items = OrderItem.objects.filter(meal__canteen=self, quantity_delivered__lt=F('quantity_ordered'))
 
+        for order_item in order_items:
+            items_to_be_delivered[order_item.meal] += order_item.quantity_ordered - (order_item.quantity_delivered or 0)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return items_to_be_delivered
 

@@ -9,15 +9,15 @@ from base.custom_decorators import *
 @login_required()
 # @canteen_provider_required()
 def homePage(request, *args, **kwargs):
-	# print(request.user)
 	canteen=Canteen.objects.get(canteen_owner=request.user)
-	# print(canteen)
-	order_items=Order.getActiveOrdersItems(canteen)
-	# print(order_items)
-	context={
-		'order_items':order_items,
+	order_items=Order.get_items_to_be_delivered(canteen)
+	items={
 	}
-	return render(request, 'canteen_provider/live_code_feed.html', context)
+	for i,j in order_items.items():
+		items[str(i)]=j
+	context= { 'order_items':items }
+	print(context)
+	return render(request, 'canteen_provider/provider_page.html', context)
 
 
 
