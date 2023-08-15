@@ -34,61 +34,13 @@ class CanteenProvider(AsyncWebsocketConsumer):
 	async def receive(self, text_data):
 		pass
 	async def sendOrder(self,order) :
-		# print(json.dumps(order))
-		# await self.send(json.dumps({"message":"Test Message"}))
-		# print('Reached')
 		await self.send(json.dumps({"message":order}))
 	async def custom_message_handler(self, event):
-		# print("Message Received")
-		# await self.send(text_data=message)
-		print(event["order"])
 		await self.sendOrder(event["order"])
 		print("Ordered")
 
 	async def deliverOrder(self , order) :
 		pass
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	# def get_inc(user_id):
-    	# return [obj for obj in gc.get_objects() if isinstance(obj, cls)]
-
-	# Receive message from room group
-	# Functions to perform:
-		# 1. Create Orders
-		# 2. Deliver OTP
-		# 3. Provide information on availability of orders
-		# 4. 
 
 
 class CustomerConsumer(AsyncWebsocketConsumer):

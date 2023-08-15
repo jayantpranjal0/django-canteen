@@ -1,16 +1,48 @@
-{% comment %} 
-    - Will Require current OTP
-    - Will have current delivery and the items to delivered
-    - One user cant request to deliver items before collecting his last request
-
-{% endcomment %}
-
-
-
-
-
-
-
-<div id="otp">
+<div id="live_connection">
     Creating Connection.......!! Please wait
+    
 </div>
+
+<script>
+    const chatSocket = new WebSocket("ws://" + window.location.host + "/");
+    const otp = document.querySelector("#live_connection");
+    chatSocket.onopen = function (e) {
+        console.log("Connection for current_deliver Established!");
+        otp.innerHTML = "Connection Established ! Please Wait.....";
+        getNewOTP();
+    };
+    function getNewOTP(){
+        otp.innerHTML = "Getting New OTP";
+        chatSocket.send(JSON.stringify({
+            'type': 'get_new_otp',
+            'message': 'get_new_otp'
+        }));
+    }
+    
+    function sendDelivered(){
+
+    }
+
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        console.log(data);
+        if(data.type == "new_otp"){
+            otp.innerHTML = data.otp;
+        }
+        else if(data.type == "delivered"){
+            otp.innerHTML = "Items Delivered";
+        }
+        else if(data.type == "error"){
+            otp.innerHTML = "Error : " + data.message;
+        }
+    };
+</script>
+
+
+
+
+make the code to have the following functionalities:
+1. Whenever getOTP function is called get a new OTP and update it in element with id otp
+2. Whemever sendDelivered function is called send the message to server that the following order is delivered
+3. Keep receiving messages on socket connection and whenever a new otp is sent update the otp in element with id otp
+4. Whenever an order item to deliver is receive in chatsocket update the screen with those items and also have a button which will be pressed when its delivered.
