@@ -4,6 +4,22 @@ from base.models import *
 from base.custom_decorators import *
 from django.contrib.auth.decorators import login_required
 from asgiref.sync import sync_to_async
+import math, random
+ 
+# function to generate OTP
+def generateOTP() :
+ 
+    # Declare a digits variable  
+    # which stores all digits 
+    digits = "0123456789"
+    OTP = ""
+ 
+   # length of password can be changed
+   # by changing value in range
+    for i in range(4) :
+        OTP += digits[math.floor(random.random() * 10)]
+ 
+    return OTP
 
 
 class CanteenProvider(AsyncWebsocketConsumer):
@@ -32,7 +48,36 @@ class CanteenProvider(AsyncWebsocketConsumer):
 		)
 
 	async def receive(self, text_data):
-		pass
+		text_data_json = json.loads(text_data)
+		print(text_data_json)
+		if(text_data_json.get("type")=="order"):
+			order = text_data_json["order"]
+			await self.channel_layer.group_send(
+				'all',{
+					"type" : "custom_message_handler" ,
+					"order" : order ,
+				})
+		elif(text_data_json.get("type")=="deliver"):
+			order = text_data_json["order"]
+			await self.channel_layer.group_send(
+				order.customer.username,{
+					"type" : "deliverOrder" ,
+					"order" : order ,
+				})
+			
+		elif (text_data_json.get("type")=="get_new_otp"):
+			otp = generateOTP()
+			await self.send(text_data=json.dumps({
+				"type":"new_otp",
+				"otp":otp,
+			}))
+		# await self.send(text_data=json.dumps({
+		# 	'message': message,
+		# 	'username': username,
+		# }))
+		
+
+
 	async def sendOrder(self,order) :
 		await self.send(json.dumps({"message":order}))
 	async def custom_message_handler(self, event):

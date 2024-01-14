@@ -37,7 +37,12 @@
         console.log(data);
         
         if (data.type == "new_otp") {
-            otp.innerHTML = data.otp;
+
+            // otp.innerHTML = data.otp;
+            console.log(data)
+            console.log("New OTP : " + data.otp)
+            otp.innerHTML = "New OTP : " + data.otp;
+
         } else if (data.type == "delivered") {
             otp.innerHTML = "Items Delivered";
         } else if (data.type == "error") {
