@@ -30,9 +30,31 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
             <div class="container-fluid" style="padding:0;">
+                <!-- Checking Base Component -->
                 {%include 'components/navbar.html' %}
                 {% block content %}{% endblock %}
             <div>
-        {% comment %} <script src="main.js" async defer></script> {% endcomment %}
+        <!-- <script src="main.js" async defer></script>  -->
+        <script>
+            // import WebSocket from 'ws';
+            // open the websocket connection
+            try {
+                // alert("Connecting to server...");
+                const chatSocket = new WebSocket("ws://" + window.location.host + "/customer");
+                chatSocket.onopen = function() {
+                    console.log("Socket opened.");
+                    // alert("Connection Established!!");
+                }
+
+                chatSocket.onclose = function() {
+                    console.log("Socket closed.");
+                    alert("Connection Closed!! Please refresh the page.");
+                }
+            } catch(err) {
+                console.log(err);
+                alert("Error: " + err);
+                alert("Please refresh the page.");
+            }
+        </script>
     </body>
 </html>

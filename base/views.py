@@ -39,6 +39,8 @@ def home(request):
                 if prepared_items[order_item.meal] > order_item.quantity_delivered:
                     items[order_item.meal]=min(prepared_items[order_item.meal],items[order_item.meal])                    
 
+
+    print(request.user)
     context = {"canteens": Canteen.all(),"items":items}
     return render(request, 'base/home_page.html', context)
 
@@ -122,6 +124,57 @@ def checkout(request):
 def orders(request):
     context={}
     return render(request, 'base/orders.html',context)
+
+@login_required()
+@customer_required()
+def customer(request):
+    context={}
+
+    if request.method=='POST':
+        print(request.POST)
+        if 'meal_name' in request.POST:
+            meal_name=request.POST['meal_name']
+            meal=Meal.objects.get(name=meal_name)
+            if meal:
+                order_items=OrderItem.objects.get(meal=meal,order__user=request.user, quantity_ordered__gt=F('quantity_delivered'))
+                if order_items:
+                    # order_item.quantity_delivered+=1
+                    # instead of adding 1 to quantity_delivered, we are adding the quantity of the meal sent with the request
+                    # this will be done by first getting the index of the meal in the meal_item list and then getting the quantity from the quantity list
+                    # then add the quantity to the quantity_delivered but making sure to not exceed the quantity_ordered
+                    # the remaining quantity will go to other OrderedItems
+
+                    # get the index of the meal in the meal_item list
+                    index = order_item.order.meal_items.index(meal)
+                    # get the quantity from the quantity list
+                    quantity = order_item.order.quantity_items[index]
+                    # add the quantity to the quantity_delivered but making sure to not exceed the quantity_ordered
+                    
+                    for order_item in order_items:
+                        if quantity>0:
+                            temp+=min(quantity,order_item.quantity_ordered-temp)
+                            order_item.quantity_delivered+=temp
+                            quantity-=temp
+                            order_item.save()
+                        else:
+                            break
+                            
+
+
+
+                    
+                    # order_item.save()
+                    # if order_item.quantity_delivered>=order_item.quantity_ordered:
+                    #     order_item.delete()
+                    return HttpResponse('Success')
+                else:
+                    return HttpResponse('Error')
+            else:
+                return HttpResponse('Error')
+
+    return HttpResponse('Success')
+
+    # return render(request, 'base/customer.html',context)
 
 
 

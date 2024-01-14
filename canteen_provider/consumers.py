@@ -19,6 +19,7 @@ def generateOTP() :
 
 class CanteenProvider(AsyncWebsocketConsumer):
 	async def connect(self):
+		print("Connected as Canteen Provider")
 		user=self.scope['user']
 		user_obj = await sync_to_async(User.objects.get)(username=user.username)
 		if(not user.is_authenticated):
@@ -66,6 +67,7 @@ class CanteenProvider(AsyncWebsocketConsumer):
 				"type":"new_otp",
 				"otp":otp,
 			}))
+			
 		# await self.send(text_data=json.dumps({
 		# 	'message': message,
 		# 	'username': username,
@@ -85,6 +87,7 @@ class CanteenProvider(AsyncWebsocketConsumer):
 
 class CustomerConsumer(AsyncWebsocketConsumer):
 	async def connect(self):
+		print("Connected")
 		await self.accept()
 	
 	async def disconnect(self, close_code):

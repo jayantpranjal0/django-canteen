@@ -29,20 +29,7 @@ And navigate to `http://127.0.0.1:8000/`.
 
 
 
-
-<!-- Next Change:
-
-3. Add Functionality to order (add to cart and fast checkout)
-4. Add functionlity for canteenwala to have an UI for order
-5. Add functionality for user to get random 4 digit number for order collection
-6. Add functionality for partial order collection
-
-
-
+<!-- 
+task left to connect everything with websockets
 
  -->
-
-Things left to do:
-1. Add functionality to update items counts to be prepared whenever an older order is updated 
-2. Add functionality to notify users when their order is ready
-3. Add functionality to to collect orders

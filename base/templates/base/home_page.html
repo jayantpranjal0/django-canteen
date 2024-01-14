@@ -8,25 +8,31 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-12">
-            <h2>Items Available:</h2>
-            <ul>
-                {% for item, quantity in items.items %}
-                    <li>
-                        {{ item.name }} - Quantity:
-                        <input type="number" min="0" max="{{ quantity }}" value="{{ quantity }}">
-                        <button onclick="decreaseQuantity(this)">-</button>
-                        <button onclick="increaseQuantity(this)">+</button>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
+    
 
     <div class="row">
         <div class="col-md-12">
-            <button onclick="submitForm()">Submit</button>
+            <form method="POST" action="/customer">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2>Items Available:</h2>
+                        <ul>
+                            {% for item, quantity in items.items %}
+                                <li>
+                                    {{ item.name }} - Quantity:
+                                    <input type="number" min="0" max="{{ quantity }}" value="{{ quantity }}">
+                                    <button onclick="decreaseQuantity(this)">-</button>
+                                    <button onclick="increaseQuantity(this)">+</button>
+                                    <input type="hidden" name="meal_name" value="{{ item.name }}">
+                                    <input type="hidden" name="quantity" value="{{ quantity }}">
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <button type="submit">Submit</button>
+            </form>
         </div>
     </div>
 </div>
@@ -44,12 +50,6 @@
         if (input.value < input.getAttribute("max")) {
             input.value++;
         }
-    }
-
-    function submitForm() {
-        // Add your form submission logic here
-        // For example, you can use AJAX to send the form data to the server
-        console.log("Form submitted!");
     }
 </script>
 

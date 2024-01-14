@@ -47,6 +47,7 @@
 
         } else if (data.type == "delivered") {
             otp.innerHTML = "Items Delivered";
+            // get username and maybe otp too
         } else if (data.type == "error") {
             otp.innerHTML = "Error : " + data.message;
         } else if (data.type == "order_items") {
