@@ -8,14 +8,9 @@ import math, random
  
 # function to generate OTP
 def generateOTP() :
- 
-    # Declare a digits variable  
-    # which stores all digits 
+
     digits = "0123456789"
     OTP = ""
- 
-   # length of password can be changed
-   # by changing value in range
     for i in range(4) :
         OTP += digits[math.floor(random.random() * 10)]
  
@@ -93,6 +88,7 @@ class CustomerConsumer(AsyncWebsocketConsumer):
 		await self.accept()
 	
 	async def disconnect(self, close_code):
+		print("Disconnected ",close_code)
 		pass
 
 	async def receive(self, text_data):
@@ -105,6 +101,8 @@ class CustomerConsumer(AsyncWebsocketConsumer):
 				"message" : message ,
 				"username" : username ,
 			})
+		
+	
 	async def sendMessage(self , event) :
 		message = event["message"]
 		username = event["username"]

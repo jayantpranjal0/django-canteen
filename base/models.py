@@ -74,9 +74,20 @@ class Meal(models.Model):
     canteen=models.ForeignKey('Canteen', on_delete=models.CASCADE)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
+    qunatity_prepared=models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
+    
+    def get_prepared_items_by_canteen(canteen):
+        # Get prepared quantity for each meal in the specific canteen
+        prepared_items = defaultdict(int)
+        order_items = OrderItem.objects.filter(meal__canteen=canteen, quantity_delivered__gt=0)
+        for order_item in order_items:
+            prepared_items[order_item.meal] += order_item.quantity_delivered
+        return prepared_items
+    
+        # return order_items
 
 
 class OrderItem(models.Model):
@@ -127,6 +138,8 @@ class Order(models.Model):
 
         for order_item in order_items:
             items_to_be_delivered[order_item.meal] += order_item.quantity_ordered - (order_item.quantity_delivered or 0)
+        #     print(order_item.meal,":",items_to_be_delivered[order_item.meal])
+        # print(items_to_be_delivered)
 
         return items_to_be_delivered
 

@@ -2,9 +2,11 @@
     Creating Connection.......!! Please wait
 </div>
 
-<div id="order_items">
+<div id="order_items"></div>
     <!-- Items to be displayed here -->
 </div>
+
+<button onclick="getNewOTP()">Get New OTP</button>
 
 <script>
     const chatSocket = new WebSocket("ws://" + window.location.host + "/");

@@ -27,12 +27,12 @@
                     <div class="card d-flex flex-column meal-card">
                         <div class="card-body">
                             <h5 class="card-title">{{ meal }}</h5>
-                            <p class="card-text">Quantity to be delivered: {{ quantity_to_be_delivered }}</p>
+                            <p class="card-text">Quantity to prepared: {{ quantity_to_be_delivered }}</p>
                             <!-- Add counter buttons here -->
                             <div class="mt-auto counter-btn-group">
                                 <div class="counter-btn" onclick="decrementCount(this)">-</div>
                                 <span class="badge badge-primary">0 Prepared</span>
-                                <div class="counter-btn" onclick="incrementCount(this)">+</div>
+                                <div class="counter-btn" onclick="incrementCount(this, '{{ meal }}')">+</div>
                             </div>
                         </div>
                     </div>
@@ -41,11 +41,12 @@
         </div>
     </div>
     <script>
-        function incrementCount(button) {
+        function incrementCount(button, meal) {
             var badge = button.parentElement.querySelector('.badge');
             var preparedCount = parseInt(badge.innerText);
             preparedCount++;
             badge.innerText = preparedCount + ' Prepared';
+            avail_item(meal, preparedCount);
         }
         
         function decrementCount(button) {
@@ -54,36 +55,28 @@
             if (preparedCount > 0) {
                 preparedCount--;
                 badge.innerText = preparedCount + ' Prepared';
+                avail_item('{{ meal }}', preparedCount);
             }
         }
-    </script>
-    <script>	
-        const chatSocket = new WebSocket("ws://" + window.location.host + "/");
-        chatSocket.onopen = function (e) {
-            console.log("The connection was setup successfully !");
-        };
-        chatSocket.onclose = function (e) {
-            console.log(e)
-            console.log("Something unexpected happened !");
-        };
-
-        chatSocket.onmessage = function (e) {
-            const data = JSON.parse(e.data);
-            console.log(data)
-        };
-
-        chatSocket.onerror = function (e) {
-            console.log(e)
-            console.log("Something unexpected happened !");
-        };
-
-        function avail_item(item_id, quantity) {
-            chatSocket.send(JSON.stringify({
-                "message": "Hello World"
-            }));
+        
+        function avail_item(item_name, quantity) {
+            // Send WebSocket request to increase count of items by 1
+            // Replace the URL with the appropriate WebSocket endpoint
+            const chatSocket = new WebSocket("ws://" + window.location.host + "/");
+            chatSocket.onopen = function (e) {
+                console.log("WebSocket connection established");
+                chatSocket.send(JSON.stringify({
+                    action: 'avail_item',
+                    item_name: item_name,
+                    quantity: quantity
+                }));
+            };
+            chatSocket.onclose = function (e) {
+                console.log("WebSocket connection closed");
+            };
+            chatSocket.onerror = function (e) {
+                console.error("WebSocket error:", e);
+            };
         }
-        chatSocket.send(JSON.stringify({
-            "message": "Hello World"
-        }));
     </script>
 </div>
