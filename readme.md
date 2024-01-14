@@ -41,3 +41,8 @@ And navigate to `http://127.0.0.1:8000/`.
 
 
  -->
+
+Things left to do:
+1. Add functionality to update items counts to be prepared whenever an older order is updated 
+2. Add functionality to notify users when their order is ready
+3. Add functionality to to collect orders

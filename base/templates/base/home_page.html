@@ -1,2 +1,56 @@
-{% extends 'components/base.html' %} {%block content%}
+{% extends 'components/base.html' %} 
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Home Page</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Items Available:</h2>
+            <ul>
+                {% for item, quantity in items.items %}
+                    <li>
+                        {{ item.name }} - Quantity:
+                        <input type="number" min="0" max="{{ quantity }}" value="{{ quantity }}">
+                        <button onclick="decreaseQuantity(this)">-</button>
+                        <button onclick="increaseQuantity(this)">+</button>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <button onclick="submitForm()">Submit</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function decreaseQuantity(button) {
+        var input = button.previousElementSibling;
+        if (input.value > 0) {
+            input.value--;
+        }
+    }
+
+    function increaseQuantity(button) {
+        var input = button.previousElementSibling.previousElementSibling;
+        if (input.value < input.getAttribute("max")) {
+            input.value++;
+        }
+    }
+
+    function submitForm() {
+        // Add your form submission logic here
+        // For example, you can use AJAX to send the form data to the server
+        console.log("Form submitted!");
+    }
+</script>
+
 {% endblock %}
