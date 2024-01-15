@@ -87,7 +87,14 @@ class CanteenProvider(AsyncWebsocketConsumer):
 
 class CustomerConsumer(AsyncWebsocketConsumer):
 	async def connect(self):
-		print("Connected")
+		user=self.scope['user']
+		user_obj = await sync_to_async(User.objects.get)(username=user.username)
+		if(not user.is_authenticated):
+			print("Error")
+		await self.channel_layer.group_add(
+			user_obj.username,
+			self.channel_name
+        )
 		await self.accept()
 	
 	async def disconnect(self, close_code):

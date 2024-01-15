@@ -133,31 +133,48 @@ def customer(request):
     if request.method=='POST':
         print(request.POST)
         if 'meal_name' in request.POST:
-            meal_name=request.POST['meal_name']
-            meal=Meal.objects.get(name=meal_name)
-            if meal:
-                order_items=OrderItem.objects.get(meal=meal,order__user=request.user, quantity_ordered__gt=F('quantity_delivered'))
-                if order_items:
-                    # order_item.quantity_delivered+=1
-                    # instead of adding 1 to quantity_delivered, we are adding the quantity of the meal sent with the request
-                    # this will be done by first getting the index of the meal in the meal_item list and then getting the quantity from the quantity list
-                    # then add the quantity to the quantity_delivered but making sure to not exceed the quantity_ordered
-                    # the remaining quantity will go to other OrderedItems
+            meal_names=request.POST['meal_name']
+            # convert meal names to list
+            meal_names=meal_names.split(',')
+            # print(meal_names,type(meal_names))
+            amount=len(meal_names)
+            for index in range(amount):
+                meal=meal_names[index]
+                print(index,meal)
+                # order_with_meal=OrderItem.objects.filter(meal__name=meal,order__user=request.user, quantity_ordered__gt=F('quantity_delivered'))
+                order_with_meal=OrderItem.objects.filter(meal__name=meal,order__user=request.user, quantity_ordered__gt=F('quantity_delivered'))
+                count=request.POST['quantity']
+                count=count.split(',')
+                count=int(count[index])
+                print(count)
+                print(order_with_meal)
+                for order in order_with_meal:
+                    temp=min(order.quantity_ordered-order.quantity_delivered,int(count))
+                    order.quantity_delivered+=temp
+                    count-=temp
+                    order.save()
+                # also reduce the quantity of the meal in the canteen
+                meal=Meal.objects.get(name=meal)
+                meal.quantity-=count
 
-                    # get the index of the meal in the meal_item list
-                    index = order_item.order.meal_items.index(meal)
-                    # get the quantity from the quantity list
-                    quantity = order_item.order.quantity_items[index]
-                    # add the quantity to the quantity_delivered but making sure to not exceed the quantity_ordered
+
+
+            # meal=Meal.objects.get(name=meal_name)
+            # if meal:
+            #     order_items=OrderItem.objects.filter(meal=meal,order__user=request.user, quantity_ordered__gt=F('quantity_delivered'))
+            #     if order_items:
+            #         quantity=int(request.POST['quantity'])
+            #         temp=0
                     
-                    for order_item in order_items:
-                        if quantity>0:
-                            temp+=min(quantity,order_item.quantity_ordered-temp)
-                            order_item.quantity_delivered+=temp
-                            quantity-=temp
-                            order_item.save()
-                        else:
-                            break
+                    
+            #         for order_item in order_items:
+            #             if quantity>0:
+            #                 temp+=min(quantity,order_item.quantity_ordered-temp)
+            #                 order_item.quantity_delivered+=temp
+            #                 quantity-=temp
+            #                 order_item.save()
+            #             else:
+            #                 break
                             
 
 
@@ -166,11 +183,12 @@ def customer(request):
                     # order_item.save()
                     # if order_item.quantity_delivered>=order_item.quantity_ordered:
                     #     order_item.delete()
-                    return HttpResponse('Success')
-                else:
-                    return HttpResponse('Error')
-            else:
-                return HttpResponse('Error')
+                #     return HttpResponse('Success')
+                # else:
+                #     return HttpResponse('Error')
+        return HttpResponse('Success')
+            # else:
+            #     return HttpResponse('Error')
 
     return HttpResponse('Success')
 
