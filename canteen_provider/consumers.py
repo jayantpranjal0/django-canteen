@@ -46,6 +46,7 @@ class CanteenProvider(AsyncWebsocketConsumer):
 	async def receive(self, text_data):
 		text_data_json = json.loads(text_data)
 		print(text_data_json)
+
 		if(text_data_json.get("type")=="order"):
 			order = text_data_json["order"]
 			await self.channel_layer.group_send(
@@ -67,6 +68,13 @@ class CanteenProvider(AsyncWebsocketConsumer):
 				"type":"new_otp",
 				"otp":otp,
 			}))
+		elif (text_data_json.get("type")=="avail_item"):
+			# await sync_to_async(print)(text_data_json.get("item_name"))
+			meal_object = await sync_to_async(Meal.objects.get)(name=text_data_json.get("item_name"))
+			meal_object.qunatity_prepared = meal_object.qunatity_prepared + 1
+			print(meal_object.qunatity_prepared)
+			await sync_to_async(meal_object.save)()
+
 			
 		# await self.send(text_data=json.dumps({
 		# 	'message': message,

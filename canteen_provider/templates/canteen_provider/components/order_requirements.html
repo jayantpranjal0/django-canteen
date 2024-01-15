@@ -61,7 +61,7 @@
         
         function avail_item(item_name, quantity) {
             chatSocket.send(JSON.stringify({
-                action: 'avail_item',
+                type: 'avail_item',
                 item_name: item_name,
                 quantity: quantity
             }));
