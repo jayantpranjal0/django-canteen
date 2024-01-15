@@ -1,0 +1,67 @@
+{% extends 'components/base.html' %} 
+{% block content %}
+
+<div class="container"></div>
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Home Page</h1>
+        </div>
+    </div>
+
+    <div class="row"></div>
+        <div class="col-md-12">
+            <form method="POST" action="/canteen_orders/accept" id="form">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2>Items Available:</h2>
+                        <ul>
+                            {% for item, quantity in items.items %}
+                                <li>
+                                    {{ item }} - Quantity:
+                                    <input type="number" min="0" max="{{ quantity }}" value="{{ quantity }}" name="quantity">
+                                    <button onclick="decreaseQuantity(this)">-</button>
+                                    <button onclick="increaseQuantity(this)">+</button>
+                                    <input type="hidden" name="meal_name" value="{{ item }}">
+                                    <!-- <input type="hidden" name="quantity" value="{{ quantity }}"> -->
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                
+                <input type="text" name="otp" placeholder="Enter OTP">
+                
+                <button type="submit" onclick="updateValues()">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function decreaseQuantity(button) {
+        event.preventDefault();
+        var input = button.previousElementSibling;
+        if (input.value > 0) {
+            input.value--;
+        }
+    }
+
+    function increaseQuantity(button) {
+        event.preventDefault();
+        var input = button.previousElementSibling.previousElementSibling;
+        if (input.value < input.getAttribute("max")) {
+            input.value++;
+        }
+    }
+
+    function updateValues() {
+        // var inputs = document.querySelectorAll('input[type="number"]');
+        // inputs.forEach(function(input) {
+        //     input.setAttribute("value", input.value);
+        // });
+        document.getElementById("form").submit();
+    }
+</script>
+
+{% endblock %}

@@ -68,6 +68,10 @@ class CanteenProvider(AsyncWebsocketConsumer):
 				"type":"new_otp",
 				"otp":otp,
 			}))
+			canteen = await sync_to_async(Canteen.objects.get)(canteen_owner=self.scope['user'])
+			canteen.otp = otp
+			await sync_to_async(canteen.save)()
+			
 		elif (text_data_json.get("type")=="avail_item"):
 			# await sync_to_async(print)(text_data_json.get("item_name"))
 			meal_object = await sync_to_async(Meal.objects.get)(name=text_data_json.get("item_name"))

@@ -28,6 +28,7 @@ class Canteen(models.Model):
     description=models.TextField(blank=True)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
+    otp=models.CharField(max_length=4, blank=True)
 
     def __str__(self):
         return self.name
@@ -79,15 +80,22 @@ class Meal(models.Model):
     def __str__(self):
         return self.name
     
-    def get_prepared_items_by_canteen(canteen):
+    def get_prepared_items():
         # Get prepared quantity for each meal in the specific canteen
         prepared_items = defaultdict(int)
-        order_items = OrderItem.objects.filter(meal__canteen=canteen, quantity_delivered__gt=0)
+        order_items = OrderItem.objects.filter(quantity_delivered__gt=0)
         for order_item in order_items:
             prepared_items[order_item.meal] += order_item.quantity_delivered
         return prepared_items
     
         # return order_items
+    def get_prepared_items_by_canteen(canteen):
+        # Get prepared quantity for each meal in the specific canteen
+        prepared_items = defaultdict(int)
+        meals = Meal.objects.filter(qunatity_prepared__gt=0,canteen=canteen)
+        for meal in meals:
+            prepared_items[meal.name] += meal.qunatity_prepared
+        return prepared_items
 
 
 class OrderItem(models.Model):

@@ -12,4 +12,6 @@ urlpatterns = [
     path('checkout',views.checkout,name='checkout'),
     path('orders',views.orders,name='customer_orders'),
     path('customer',views.customer,name='customer'),
+    path('canteen_orders/<int:id>',views.canteen_orders,name='canteen_orders'),
+    path('canteen_orders/accept',views.accept,name='accept'),
 ]
