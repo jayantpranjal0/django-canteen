@@ -30,7 +30,18 @@ And navigate to `http://127.0.0.1:8000/`.
 
 
 <!-- 
-task left to connect everything with websockets
+
+Things left to complete basic:
+1. OTP based orders verifications
+2. Update on every item prepraration and order and delivery
+
+
 Migrate the model to just keep count of meals with the user
 This is a different kind of project
  -->
+
+
+ <!-- 
+ Further tasks:
+ Optimizations
+  -->
