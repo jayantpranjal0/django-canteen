@@ -6,7 +6,6 @@ from django.contrib.auth.decorators import login_required
 from asgiref.sync import sync_to_async
 import math, random
  
-# function to generate OTP
 def generateOTP() :
 
     digits = "0123456789"
@@ -73,20 +72,10 @@ class CanteenProvider(AsyncWebsocketConsumer):
 			await sync_to_async(canteen.save)()
 			
 		elif (text_data_json.get("type")=="avail_item"):
-			# await sync_to_async(print)(text_data_json.get("item_name"))
 			meal_object = await sync_to_async(Meal.objects.get)(name=text_data_json.get("item_name"))
 			meal_object.qunatity_prepared = meal_object.qunatity_prepared + 1
 			print(meal_object.qunatity_prepared)
 			await sync_to_async(meal_object.save)()
-
-			
-		# await self.send(text_data=json.dumps({
-		# 	'message': message,
-		# 	'username': username,
-		# }))
-		
-
-
 	async def sendOrder(self,order) :
 		await self.send(json.dumps({"message":order}))
 	async def custom_message_handler(self, event):
