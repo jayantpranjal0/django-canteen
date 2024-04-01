@@ -59,6 +59,7 @@ def checkout(request):
             order=Order.objects.create(
                 user=request.user,
             )
+            canteen=None
             for meal,quantity in orderRequest.items():
                 if quantity>0:
                     meal = Meal.objects.get(id=meal)
@@ -68,13 +69,15 @@ def checkout(request):
                             meal=meal,
                             quantity_ordered=quantity,
                             quantity_delivered=0,
-
                         )
                     else:
                         return HttpResponse('Error')
-            sendOrder(order)
+                    if canteen==None:
+                        canteen=meal.canteen
+            # sendOrder(order)
             # on order placeas only the canteen owner needs to be notified
             # Work requireed to be done here
+            sendOrderRequirements(canteen)
 
 
             return redirect('home')

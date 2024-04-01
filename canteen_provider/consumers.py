@@ -76,6 +76,7 @@ class CanteenProvider(AsyncWebsocketConsumer):
 			meal_object.qunatity_prepared = meal_object.qunatity_prepared + 1
 			print(meal_object.qunatity_prepared)
 			await sync_to_async(meal_object.save)()
+			
 	async def sendOrder(self,order) :
 		await self.send(json.dumps({"message":order}))
 	async def custom_message_handler(self, event):

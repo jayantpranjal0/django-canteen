@@ -30,7 +30,7 @@
                             <p class="card-text">Quantity to prepared: {{ quantity_to_be_delivered }}</p>
                             <!-- Add counter buttons here -->
                             <div class="mt-auto counter-btn-group">
-                                <div class="counter-btn" onclick="decrementCount(this)">-</div>
+                                <div class="counter-btn" onclick="decrementCount(this, '{{ meal }}')">-</div>
                                 <span class="badge badge-primary">0 Prepared</span>
                                 <div class="counter-btn" onclick="incrementCount(this, '{{ meal }}')">+</div>
                             </div>
@@ -68,3 +68,9 @@
         }
     </script>
 </div>
+
+
+
+{% comment %} Just refresh for now on getting something {% endcomment %}
+{% comment %} Second way to do is to make a re-render function {% endcomment %}
+{% comment %} Use websockets to refresh at this time. Later improve this {% endcomment %}

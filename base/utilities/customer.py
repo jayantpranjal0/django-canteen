@@ -32,3 +32,24 @@ def sendOrder(order):
             "order": order_items_json,
         },
     )
+
+
+
+
+def sendOrderRequirements(canteen):
+    channel_layer = get_channel_layer()
+    order_items = Order.get_items_to_be_delivered(canteen)
+    items = {}
+    for i, j in order_items.items():
+        items[str(i)] = j
+    print(items)
+    context = {'order_items': items}
+    canteen_owner_username = canteen.canteen_owner.username
+    async_to_sync(channel_layer.group_send)(
+        canteen_owner_username,
+        {
+            "type": "custom_message_handler",
+            "event": "New Order",
+            "order": items,
+        },
+    )
