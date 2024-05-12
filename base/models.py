@@ -93,6 +93,11 @@ class Meal(models.Model):
         for meal in meals:
             prepared_items[meal.name] += meal.qunatity_prepared
         return prepared_items
+    
+    def update_prepared_items(meal_name,quantity):
+        meal = Meal.objects.get(name=meal_name)
+        meal.qunatity_prepared = meal.qunatity_prepared + quantity
+        meal.save()
 
 
 class OrderItem(models.Model):

@@ -5,6 +5,7 @@ from base.custom_decorators import *
 from django.contrib.auth.decorators import login_required
 from asgiref.sync import sync_to_async
 import math, random
+
  
 def generateOTP() :
 
@@ -67,13 +68,22 @@ class CanteenProvider(AsyncWebsocketConsumer):
 				"type":"new_otp",
 				"otp":otp,
 			}))
-			canteen = await sync_to_async(Canteen.objects.get)(canteen_owner=self.scope['user'])
-			canteen.otp = otp
-			await sync_to_async(canteen.save)()
+		# elif (text_data_json.get("type")=="avail_item+"):
+		# 	Meal.update_prepared_items(text_data_json.get("item_name"),1)
+		# elif(text_data_json.get("type")=="avail-"):
+		# 	Meal.update_prepared_items(text_data_json.get("item_name"),-1)
+		# 	canteen = await sync_to_async(Canteen.objects.get)(canteen_owner=self.scope['user'])
+		# 	canteen.otp = otp
+		# 	await sync_to_async(canteen.save)()
 			
-		elif (text_data_json.get("type")=="avail_item"):
+		elif (text_data_json.get("type")=="avail_item+"):
 			meal_object = await sync_to_async(Meal.objects.get)(name=text_data_json.get("item_name"))
 			meal_object.qunatity_prepared = meal_object.qunatity_prepared + 1
+			print(meal_object.qunatity_prepared)
+			await sync_to_async(meal_object.save)()
+		elif (text_data_json.get("type")=="avail_item-"):
+			meal_object = await sync_to_async(Meal.objects.get)(name=text_data_json.get("item_name"))
+			meal_object.qunatity_prepared = meal_object.qunatity_prepared - 1
 			print(meal_object.qunatity_prepared)
 			await sync_to_async(meal_object.save)()
 			
