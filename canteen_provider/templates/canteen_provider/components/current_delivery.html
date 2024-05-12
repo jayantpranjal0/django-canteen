@@ -37,7 +37,7 @@
     chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
         console.log(data);
-        
+        console.log(data.type)
         if (data.type == "new_otp") {
 
             // otp.innerHTML = data.otp;
@@ -51,21 +51,24 @@
         } else if (data.type == "error") {
             otp.innerHTML = "Error : " + data.message;
         } else if (data.type == "order_items") {
-            updateOrderItems(data.items);
+            console.log(data.message)
+            updateOrderItems(data.message);
         }
     };
 
-    function updateOrderItems(items) {
+    {% comment %} function updateOrderItems(items) {
         orderItemsDiv.innerHTML = "";
-        items.forEach(item => {
+        Object.entries(items).forEach(([key, value]) => {
             const itemDiv = document.createElement("div");
             itemDiv.innerHTML = `
-                <p>${item.name} - Quantity to be delivered: ${item.quantity}</p>
-                <button onclick="sendDelivered(${item.order_id})">Delivered</button>
+                <h3>${value.name}</h3>
+                <p>Quantity : ${value.quantity}</p>
+                <p>Price : ${value.price}</p>
+                <button onclick="sendDelivered(${value.id})">Delivered</button>
             `;
             orderItemsDiv.appendChild(itemDiv);
         });
-    }
+    } {% endcomment %}
 </script>
 
 

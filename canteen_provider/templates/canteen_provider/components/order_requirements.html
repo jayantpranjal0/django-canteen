@@ -21,23 +21,25 @@
     </style>
     <div class="container mt-5">
         <h1 class="mb-4">Items to be Delivered</h1>
-        <div class="row">
-            {% for meal, quantity_to_be_delivered in order_items.items %}
-                <div class="col-md-3">
-                    <div class="card d-flex flex-column meal-card">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ meal }}</h5>
-                            <p class="card-text">Quantity to prepared: {{ quantity_to_be_delivered }}</p>
-                            <!-- Add counter buttons here -->
-                            <div class="mt-auto counter-btn-group">
-                                <div class="counter-btn" onclick="decrementCount(this, '{{ meal }}')">-</div>
-                                <span class="badge badge-primary">0 Prepared</span>
-                                <div class="counter-btn" onclick="incrementCount(this, '{{ meal }}')">+</div>
+        <div id="order_items">
+            <div class="row">
+                {% for meal, quantity_to_be_delivered in order_items.items %}
+                    <div class="col-md-3">
+                        <div class="card d-flex flex-column meal-card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ meal }}</h5>
+                                <p class="card-text">Quantity to prepared: {{ quantity_to_be_delivered }}</p>
+                                <!-- Add counter buttons here -->
+                                <div class="mt-auto counter-btn-group">
+                                    <div class="counter-btn" onclick="decrementCount(this, '{{ meal }}')">-</div>
+                                    <span class="badge badge-primary">0 Prepared</span>
+                                    <div class="counter-btn" onclick="incrementCount(this, '{{ meal }}')">+</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     </div>
     <script>
@@ -65,6 +67,30 @@
                 item_name: item_name,
                 quantity: quantity
             }));
+        }
+        function updateOrderItems(items) {
+            const orderItemsDiv = document.querySelector("#order_items");
+            orderItemsDiv.innerHTML = "";
+            Object.entries(items).forEach(([key, value]) => {
+                const itemDiv = document.createElement("div");
+                itemDiv.innerHTML = `
+                    <div class="col-md-3">
+                        <div class="card d-flex flex-column meal-card">
+                            <div class="card-body">
+                                <h5 class="card-title">${ key }</h5>
+                                <p class="card-text">Quantity to prepared: ${ value }</p>
+                                <!-- Add counter buttons here -->
+                                <div class="mt-auto counter-btn-group">
+                                    <div class="counter-btn" onclick="decrementCount(this, '${ key }')">-</div>
+                                    <span class="badge badge-primary">0 Prepared</span>
+                                    <div class="counter-btn" onclick="incrementCount(this, '${ key }')">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                orderItemsDiv.appendChild(itemDiv);
+            });
         }
     </script>
 </div>

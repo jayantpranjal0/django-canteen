@@ -8,12 +8,10 @@ import math, random
 
  
 def generateOTP() :
-
     digits = "0123456789"
     OTP = ""
     for i in range(4) :
         OTP += digits[math.floor(random.random() * 10)]
- 
     return OTP
 
 
@@ -88,7 +86,9 @@ class CanteenProvider(AsyncWebsocketConsumer):
 			await sync_to_async(meal_object.save)()
 			
 	async def sendOrder(self,order) :
-		await self.send(json.dumps({"message":order}))
+		print("Sending Order",order)
+		# add type to the order
+		await self.send(json.dumps({"type":"order_items","message":order}))
 	async def custom_message_handler(self, event):
 		await self.sendOrder(event["order"])
 		print("Ordered")
@@ -129,3 +129,6 @@ class CustomerConsumer(AsyncWebsocketConsumer):
 		message = event["message"]
 		username = event["username"]
 		await self.send(text_data = json.dumps({"message":message ,"username":username}))
+
+	async def updateForMeal(self,event):
+		pass

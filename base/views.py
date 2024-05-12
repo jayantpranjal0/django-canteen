@@ -98,7 +98,7 @@ def orders(request):
 @customer_required()
 def customer(request):
     context={}
-    # Some correction adn explanation is required here too
+    # Some correction and explanation is required here too
     if request.method=='POST':
         print(request.POST)
         if 'meal_name' in request.POST:
