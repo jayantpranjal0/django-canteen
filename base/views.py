@@ -15,29 +15,6 @@ from django.db.models import F
 @login_required()
 @customer_required()
 def home(request):
-    # channel_layer = get_channel_layer()
-    # order_items = OrderItem.objects.filter(order__user=request.user, quantity_ordered__gt=F('quantity_delivered'))
-    # items={
-
-    # }
-    # if order_items:
-    #     for order_item in order_items:
-    #         prepared_items = Meal.get_prepared_items()
-    #         if order_item.meal in prepared_items:
-    #             if prepared_items[order_item.meal] > order_item.quantity_delivered:
-    #                 if(order_item.meal not in items):
-    #                     items[order_item.meal]=0
-    #                 items[order_item.meal]+=order_item.quantity_ordered-order_item.quantity_delivered
-
-    # if order_items:
-    #     for order_item in order_items:
-    #         prepared_items = Meal.get_prepared_items()
-    #         if order_item.meal in prepared_items:
-    #             if prepared_items[order_item.meal] > order_item.quantity_delivered:
-    #                 items[order_item.meal]=min(prepared_items[order_item.meal],items[order_item.meal])                    
-
-
-    # context = {"canteens": Canteen.all(),"items":items}
     context = {
         "canteens": Canteen.all(),
     }

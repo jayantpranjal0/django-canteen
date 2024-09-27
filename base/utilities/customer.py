@@ -21,8 +21,6 @@ def sendOrder(order):
 
     order_items_json = json.dumps(order_items_list)
     canteen_owner=order_items[0].meal.canteen.canteen_owner
-    # print(order_items[0].meal.canteen.canteen_owner)
-    # print(order_items_json)
     canteen_owner_username = canteen_owner.username
     async_to_sync(channel_layer.group_send)(
         canteen_owner_username,

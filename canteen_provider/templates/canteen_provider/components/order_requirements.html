@@ -24,14 +24,13 @@
         <div class="row">
             {% for meal, quantity_to_be_delivered in order_items.items %}
                 <div class="col-md-3">
-                    <div class="card d-flex flex-column meal-card">
+                    <div class="card d-flex flex-column meal-card" data-meal="{{ meal }}" data-quantity="{{ quantity_to_be_delivered }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ meal }}</h5>
-                            <p class="card-text">Quantity to prepared: {{ quantity_to_be_delivered }}</p>
-                            <!-- Add counter buttons here -->
+                            <p class="card-text">Quantity to be prepared: <span class="quantity">{{ quantity_to_be_delivered }}</span></p>
                             <div class="mt-auto counter-btn-group">
-                                <div class="counter-btn" onclick="decrementCount(this)">-</div>
-                                <span class="badge badge-primary">0 Prepared</span>
+                                <div class="counter-btn" onclick="decrementCount(this, '{{ meal }}')">-</div>
+                                <span class="badge badge-primary">{{ quantity_to_be_delivered }} Prepared</span>
                                 <div class="counter-btn" onclick="incrementCount(this, '{{ meal }}')">+</div>
                             </div>
                         </div>
@@ -40,31 +39,78 @@
             {% endfor %}
         </div>
     </div>
+
     <script>
         function incrementCount(button, meal) {
             var badge = button.parentElement.querySelector('.badge');
+            var card = document.querySelector(`[data-meal="${meal}"]`);
+            var quantitySpan = card.querySelector('.quantity');
+            var currentQuantity = parseInt(quantitySpan.innerText);
+            
             var preparedCount = parseInt(badge.innerText);
             preparedCount++;
             badge.innerText = preparedCount + ' Prepared';
+            
+            card.setAttribute('data-quantity', currentQuantity);
             avail_item(meal, preparedCount);
         }
         
-        function decrementCount(button) {
+        function decrementCount(button, meal) {
             var badge = button.parentElement.querySelector('.badge');
+            var card = document.querySelector(`[data-meal="${meal}"]`);
+            var quantitySpan = card.querySelector('.quantity');
+            var currentQuantity = parseInt(quantitySpan.innerText);
+            
             var preparedCount = parseInt(badge.innerText);
             if (preparedCount > 0) {
                 preparedCount--;
                 badge.innerText = preparedCount + ' Prepared';
-                avail_item('{{ meal }}', preparedCount);
             }
+
+            card.setAttribute('data-quantity', currentQuantity);
+            avail_item(meal, preparedCount);
         }
-        
+
         function avail_item(item_name, quantity) {
             chatSocket.send(JSON.stringify({
                 type: 'avail_item',
                 item_name: item_name,
                 quantity: quantity
             }));
+        }
+
+        // Updated function to set quantity for a specific meal item
+        function updateItemCount(meal, quantity) {
+            const card = document.querySelector(`[data-meal="${meal}"]`);
+            if (card) {
+                const quantitySpan = card.querySelector('.quantity');
+                const badge = card.querySelector('.badge');
+
+                // Update the data attribute and display
+                card.setAttribute('data-quantity', quantity);
+                quantitySpan.innerText = quantity;
+                badge.innerText = quantity + ' Prepared'; // Update prepared count as well
+            } else {
+                console.error(`Meal ${meal} not found.`);
+            }
+        }
+
+        // New function to get the number of items for a specific meal
+        function getItemCount(meal) {
+            const card = document.querySelector(`[data-meal="${meal}"]`);
+            if (card) {
+                const requiredQuantity = card.getAttribute('data-quantity'); // Get the required quantity
+                const preparedBadge = card.querySelector('.badge').innerText; // Get the prepared count text
+                const preparedCount = parseInt(preparedBadge); // Extract the prepared count from the badge
+
+                return {
+                    required: parseInt(requiredQuantity),
+                    prepared: preparedCount
+                };
+            } else {
+                console.error(`Meal ${meal} not found.`);
+                return null;
+            }
         }
     </script>
 </div>

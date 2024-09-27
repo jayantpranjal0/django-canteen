@@ -78,9 +78,19 @@ class CanteenProvider(AsyncWebsocketConsumer):
 			await sync_to_async(meal_object.save)()
 	async def sendOrder(self,order) :
 		await self.send(json.dumps({"message":order}))
+	# async def custom_message_handler(self, event):
+	# 	await self.sendOrder(event["order"])
+	# 	print("Ordered")
 	async def custom_message_handler(self, event):
-		await self.sendOrder(event["order"])
-		print("Ordered")
+		order = event['order']
+		event_type = event['event']
+
+		await self.send(
+			text_data=json.dumps({
+				'type': event_type,
+				'order': order,
+			})
+		)
 
 	async def deliverOrder(self , order) :
 		pass
