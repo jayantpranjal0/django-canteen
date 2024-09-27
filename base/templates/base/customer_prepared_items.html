@@ -1,0 +1,33 @@
+{% extends 'components/base.html' %} 
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Enter the quantity of orders you want to receive</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <form method="POST" action="/canteen_orders/accept" id="form">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2>Items Available:</h2>
+                        <ul>
+                            {% for item, quantity in items.items %}
+                                <li>
+                                    {{ item }} - Maximum Quantity: {{ quantity }} - 
+                                    <input type="number" min="0" max="{{ quantity }}" value="{{ quantity }}" name="quantity_{{ item }}">
+                                    <input type="hidden" name="meal_name" value="{{ item }}">
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

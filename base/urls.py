@@ -13,5 +13,6 @@ urlpatterns = [
     path('orders',views.orders,name='customer_orders'),
     path('customer',views.customer,name='customer'),
     path('canteen_orders/<int:id>',views.canteen_orders,name='canteen_orders'),
-    path('canteen_orders/accept',views.accept,name='accept'),
+    path('canteen/<int:id>/accept',views.customerPreparedItems,name='accept'),
+    path('canteen/<int:id>/otp_input',views.getOTPInput,name='otp_input'),
 ]

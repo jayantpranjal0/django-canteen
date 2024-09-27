@@ -165,43 +165,40 @@ def accept(request):
                 meal.qunatity_prepared-=count
 
                 meal.save()
-            # generate new otp and send it
-
-
-
-            # meal=Meal.objects.get(name=meal_name)
-            # if meal:
-            #     order_items=OrderItem.objects.filter(meal=meal,order__user=request.user, quantity_ordered__gt=F('quantity_delivered'))
-            #     if order_items:
-            #         quantity=int(request.POST['quantity'])
-            #         temp=0
-                    
-                    
-            #         for order_item in order_items:
-            #             if quantity>0:
-            #                 temp+=min(quantity,order_item.quantity_ordered-temp)
-            #                 order_item.quantity_delivered+=temp
-            #                 quantity-=temp
-            #                 order_item.save()
-            #             else:
-            #                 break
-                            
-
-
-
-                    
-                    # order_item.save()
-                    # if order_item.quantity_delivered>=order_item.quantity_ordered:
-                    #     order_item.delete()
-                #     return HttpResponse('Success')
-                # else:
-                #     return HttpResponse('Error')
-
     return redirect('home')
-    # catch:
-    #     return HttpResponse('Error')
-    # finally;
-    #     return HttpResponse('Success')
+
+def customerPreparedItems(request, id):
+    # render items ordered by the customer that are prepared by the canteen
+    canteen = Canteen.ID(id)
+    order_items = OrderItem.objects.filter(order__user=request.user, quantity_ordered__gt=F('quantity_delivered'),meal__canteen=canteen)
+    items={
+    }
+    print(order_items)
+    if order_items:
+        # get the quantity of total of each order item the user has ordered and store the min of the user ordered and the prepared items
+        for order_item in order_items:
+            prepared_items = Meal.get_prepared_items_by_canteen(order_item.meal.canteen)
+            if order_item.meal in prepared_items:
+                if prepared_items[order_item.meal] > order_item.quantity_delivered:
+                    if(order_item.meal not in items):
+                        items[order_item.meal]=0
+                    items[order_item.meal]+=order_item.quantity_ordered-order_item.quantity_delivered
+    prepared_items = Meal.get_prepared_items_by_canteen(canteen)
+    for meal in prepared_items:
+        if meal not in items:
+            items[meal]=0
+        items[meal]=prepared_items[meal]
+    print(items)
+    context = {"canteens": Canteen.all(),"items":items}
+    print(items)
+    return render(request, 'base/customer_prepared_items.html', context)
+
+
+def getOTPInput(request,id):
+    if request.method == 'GET':
+        return render(request, 'base/otp_input.html')
+    elif request.method == 'POST':
+        print(request.POST)
 
 
 # def receive_order(request):
