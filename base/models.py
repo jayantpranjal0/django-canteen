@@ -146,3 +146,19 @@ class Order(models.Model):
 
         return items_to_be_delivered
 
+class OrderReceiveRequest(models.Model):
+    canteen = models.ForeignKey('Canteen', on_delete=models.CASCADE)
+    receivedItems = models.ManyToManyField('ReceivedItem')
+    time_requested = models.DateTimeField(auto_now_add=True)
+    time_completed = models.DateTimeField(blank=True, null=True)
+    otp = models.CharField(max_length=4, blank=True)
+
+    def __str__(self):
+        return str(self.id)
+
+class ReceivedItem(models.Model):
+    meal = models.ForeignKey('Meal', on_delete=models.CASCADE)
+    quantity_received = models.PositiveIntegerField()
+
+    def __str__(self):
+        return str(self.id)

@@ -1,0 +1,13 @@
+{% extends 'components/base.html' %}
+
+{% block content %}
+<div class="order-details">
+    <h2>Order OTP: {{ order_request.otp }}</h2>
+    <h3>Items:</h3>
+    <ul>
+        {% for item in order_request.receivedItems.all %}
+            <li>{{ item.meal.name }} - Quantity: {{ item.quantity_received }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

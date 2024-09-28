@@ -14,5 +14,6 @@ urlpatterns = [
     path('customer',views.customer,name='customer'),
     path('canteen_orders/<int:id>',views.canteen_orders,name='canteen_orders'),
     path('canteen/<int:id>/accept',views.customerPreparedItems,name='accept'),
-    path('canteen/<int:id>/otp_input',views.getOTPInput,name='otp_input'),
+    path('order_receive/<int:order_id>',views.orderReceive,name='order_receive_request_detail'),
+    # path('canteen/<int:id>/otp_input',views.getOTPInput,name='otp_input'),
 ]

@@ -1,4 +1,4 @@
-{% extends 'components/base.html' %} 
+{% extends 'components/base.html' %}
 {% block content %}
 <div class="container">
     <div class="row">
@@ -9,7 +9,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <form method="POST" action="/canteen_orders/accept" id="form">
+            <form method="POST" action="{% url 'accept' id=id %}" id="form">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-md-12">
@@ -18,8 +18,8 @@
                             {% for item, quantity in items.items %}
                                 <li>
                                     {{ item }} - Maximum Quantity: {{ quantity }} - 
-                                    <input type="number" min="0" max="{{ quantity }}" value="{{ quantity }}" name="quantity_{{ item }}">
-                                    <input type="hidden" name="meal_name" value="{{ item }}">
+                                    <input type="number" min="0" max="{{ quantity }}" value="0" name="quantity_{{ item }}">
+                                    <input type="hidden" name="meal_name_{{ item }}" value="{{ item }}">
                                 </li>
                             {% endfor %}
                         </ul>
